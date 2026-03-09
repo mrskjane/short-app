@@ -1,0 +1,10 @@
+apiVersion: {{ .Values.postgres.version }}
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.name }}-pvc
+spec:
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage | quote }}
+  accessModes:
+    - ReadWriteOnce

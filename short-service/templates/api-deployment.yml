@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.api.name }}-deployment
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      components: {{ .Values.api.components }}
+  template:
+    metadata:
+      name: {{ .Values.api.name }}
+      labels: 
+        components: {{ .Values.api.components }}
+    spec:
+      containers:
+        - name: {{ .Values.api.name }}
+          image: {{ .Values.api.image }}
+          ports: 
+            - containerPort: {{ .Values.api.port }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.api.port }}
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            failureThreshold: 10
+          resources:
+            limits:
+              cpu: {{ .Values.api.limits.cpu | quote }}
+              memory: {{ .Values.api.limits.memory | quote }}
+          env:
+            {{- range .Values.api.envs }}
+            {{- $data := dict "name" $.Values.api.name "env" . }}
+            {{- include "env.template" $data | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: test
+          configMap:
+            name: demo-config              
+
+#DATABASE_URL
+# postrgresql://user:password@url:5432/db
