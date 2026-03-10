@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: secrets\.yml
+    pgp: BD95D3459EFCDEE05CBB8403A8C07CD14A59FA00
